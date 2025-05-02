@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dsw2025Ej8.Domain
 {
-    internal class Exceptions
+    public class Exceptions
     {
         // Excepciones.cs
         public class MontoNoValidoException : Exception

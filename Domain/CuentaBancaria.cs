@@ -1,4 +1,12 @@
-﻿namespace Dsw2025Ej8.Domain;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using static Dsw2025Ej8.Domain.Exceptions;
+
+namespace Dsw2025Ej8.Domain;
+
 
 public abstract class CuentaBancaria
 {
@@ -19,33 +27,37 @@ public abstract class CuentaBancaria
 
     public virtual void Depositar(decimal monto)
     {
-        if (_tipo == TipoCuenta.CajaDeAhorro)
+        if (estado != Estado.Activa)
         {
-            _saldo += monto;
+            throw new CuentaNoActivaException();
         }
-        else if (_tipo == TipoCuenta.CuentaCorriente)
+        else if (monto > 0)
         {
-            monto -= monto * _comision;
-            _saldo += monto;
+            monto += Saldo;
         }
+        else 
+        { 
+            throw new MontoNoValidoException();
+        } 
     }
 
     public virtual void Retirar(decimal monto)
     {
-        if (_tipo == TipoCuenta.CajaDeAhorro)
+        if (estado != Estado.Activa)
         {
-            _saldo -= monto;
+            throw new CuentaNoActivaException();
         }
-        else if (_tipo == TipoCuenta.CuentaCorriente)
+        else if (monto < 0)
         {
-            if (_saldo - monto >= -_limiteDeDescubierto)
-            {
-                _saldo -= monto;
-            }
-            if (_saldo < 0)
-            {
-                _estado = Estado.Suspendida;
-            }
+            throw new MontoNoValidoException();
+        }
+        else if (monto >= Saldo)
+        {
+            throw new SaldoInsuficienteException();
+        }
+        else
+        {
+            monto -= Saldo;
         }
     }
 
