@@ -80,10 +80,10 @@ namespace Dsw2025Ej8.Domain
                 if (estado != Estado.Activa)
                     throw new CuentaNoActivaException(estado.ToString());
 
-                if (tasaInteres <= 0)
+                if (TasaInteres <= 0)
                     throw new MontoNoValidoException();
 
-                decimal interesCalculado = Saldo * (tasaInteres / 100);
+                decimal interesCalculado = Saldo * (TasaInteres / 100);
                 Saldo += interesCalculado;
 
                 Console.WriteLine($"Interés aplicado exitosamente. Nuevo saldo: {Saldo:C}");
@@ -102,7 +102,7 @@ namespace Dsw2025Ej8.Domain
             }
         }
     }
-    }
-}
-}
+ }
+
+
 // buenas tardes me estimad cleingte 
