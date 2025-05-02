@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Dsw2025Ej8.Domain
 {
-    public class CajaAhorro : CuentaBancaria
+    public class CajaDeAhorro : CuentaBancaria
     {
         public decimal TasaInteres { get; init; } //al inicializar,no por constructor,init. para subclase          caja de ahorro
-        public CajaAhorro (string numero, decimal saldo, string[] titulares) : base (numero, saldo, titulares)
+        public CajaDeAhorro (string numero, decimal saldo, string[] titulares) : base (numero, saldo, titulares)
         {
 
 
