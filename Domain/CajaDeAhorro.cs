@@ -52,14 +52,8 @@ namespace Dsw2025Ej8.Domain
                 if (monto <= 0)
                     throw new MontoNoValidoException();
 
-                if ((Saldo - monto) >= Saldo + LimiteDescubierto)
-                {
-
-                    throw new SaldoInsuficienteException();
-                }
-
-                Saldo -= monto;
-                Console.WriteLine($"Retiro exitoso. Nuevo saldo: {Saldo}");
+                Saldo += monto;
+                Console.WriteLine($"Deposito exitoso. Nuevo saldo: {Saldo}");
             }
             catch (CuentaNoActivaException ex)
             {
