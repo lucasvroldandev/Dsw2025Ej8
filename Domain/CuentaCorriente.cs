@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Dsw2025Ej8.Domain
 {
-    internal class CuentaCorriente : CuentaBancaria
+    public class CuentaCorriente : CuentaBancaria
     {
         public decimal LimiteDescubierto { get; init; } //al inicializar,no por constructor,init.          para clase cuenta corriente
         public decimal Comision { get; private set; }//                                y cuenta corriente
