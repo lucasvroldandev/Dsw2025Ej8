@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Dsw2025Ej8.Domain.Exceptions;
 
 namespace Dsw2025Ej8.Domain
 {
@@ -17,44 +18,72 @@ namespace Dsw2025Ej8.Domain
         }
         public override void Depositar(decimal monto)
         {
-            if (_tipo == TipoCuenta.CajaDeAhorro)
+            try
             {
-                _saldo += monto;
+                if (estado != Estado.Activa)
+                    throw new CuentaNoActivaException(estado.ToString());
+
+                if (monto <= 0)
+                    throw new MontoNoValidoException();
+
+                Saldo += monto;
             }
-            else if (_tipo == TipoCuenta.CuentaCorriente)
+            catch (CuentaNoActivaException ex)
             {
-                monto -= monto * _comision;
-                _saldo += monto;
+                Console.WriteLine("Error: La cuenta no está activa. Estado: " + ex.Message);
+            }
+            catch (MontoNoValidoException ex)
+            {
+                Console.WriteLine("Error: Monto inválido. Detalle: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error desconocido: " + ex.Message);
             }
         }
 
         public override void Retirar(decimal monto)
         {
-            if (_tipo == TipoCuenta.CajaDeAhorro)
+            try
             {
-                _saldo -= monto;
+                if (estado != Estado.Activa)
+                    throw new CuentaNoActivaException(estado.ToString());
+
+                if (monto <= 0)
+                    throw new MontoNoValidoException();
+
+                if ((Saldo - monto) >= Saldo+LimiteDescubierto)
+                {
+                   
+                    throw new SaldoInsuficienteException();
+                }
+
+                Saldo -= monto;
+                Console.WriteLine($"Retiro exitoso. Nuevo saldo: {Saldo}");
             }
-            else if (_tipo == TipoCuenta.CuentaCorriente)
+            catch (CuentaNoActivaException ex)
             {
-                if (_saldo - monto >= -_limiteDeDescubierto)
-                {
-                    _saldo -= monto;
-                }
-                if (_saldo < 0)
-                {
-                    _estado = Estado.Suspendida;
-                }
+                Console.WriteLine("Cuenta no activa: " + ex.Message);
+            }
+            catch (MontoNoValidoException ex)
+            {
+                Console.WriteLine("Monto inválido: " + ex.Message);
+            }
+            catch (SaldoInsuficienteException ex)
+            {
+                Console.WriteLine("Saldo insuficiente: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error inesperado: " + ex.Message);
             }
         }
 
         public override void AplicarInteres()
         {
-            if (_tipo == TipoCuenta.CajaDeAhorro)
-            {
-                _saldo += _saldo * _tasaDeInteres;
-            }
+           
         }
     }
 
 }
-}
+
