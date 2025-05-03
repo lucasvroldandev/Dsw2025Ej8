@@ -7,16 +7,6 @@ namespace Dsw2025Ej8
         static void Main(string[] args)
         {
 
-            /*var cuenta = new CuentaBancaria("0002030", 5000,  new []{"Juan", "Sanchez"}, 0.05m,3000);
-           {
-           tasaInteres=0.05m;
-           LimiteDescubierto=0.09;
-
-           }*/
-            /*CuentaCorriente cc1 = new CuentaCorriente ("123", 1500, new string[] { "Juan" },0.05m);
-
-            CajaDeAhorro ca = new CajaDeAhorro ("123", 1500, new string[] { "Juan" },0.05m);
-            cc.estado = Estado.Suspendida;*/
 
 
 

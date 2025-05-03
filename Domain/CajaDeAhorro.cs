@@ -11,13 +11,14 @@ namespace Dsw2025Ej8.Domain
     {
         public decimal TasaInteres { get; init; }
         public decimal Comision { get; private set; }//al inicializar,no por constructor,init. para subclase          caja de ahorro
-        public CajaDeAhorro (string numero, decimal saldo, string[] titulares, Decimal comision) : base (numero, saldo, titulares)
+        public CajaDeAhorro(string numero, decimal saldo, string[] titulares, Decimal comision) : base(numero, saldo, titulares)
         {
 
-
+            Comision = comision;
         }
         public override void Depositar(decimal monto)
         {
+            decimal ComisionDescontar = monto * Comision;
             try
             {
                 if (estado != Estado.Activa)
@@ -26,7 +27,7 @@ namespace Dsw2025Ej8.Domain
                 if (monto <= 0)
                     throw new MontoNoValidoException();
 
-                Saldo += monto;
+                Saldo += (monto + ComisionDescontar);
             }
             catch (CuentaNoActivaException ex)
             {
@@ -44,6 +45,7 @@ namespace Dsw2025Ej8.Domain
         public override void Retirar(decimal monto)
         {
 
+            decimal ComisionDescontar = monto * Comision;
             try
             {
                 if (estado != Estado.Activa)
@@ -52,8 +54,14 @@ namespace Dsw2025Ej8.Domain
                 if (monto <= 0)
                     throw new MontoNoValidoException();
 
-                Saldo += monto;
-                Console.WriteLine($"Deposito exitoso. Nuevo saldo: {Saldo}");
+                if ((monto + ComisionDescontar) >= Saldo)
+                {
+
+                    throw new SaldoInsuficienteException();
+                }
+
+                Saldo -= monto;
+                Console.WriteLine($"Retiro exitoso. Nuevo saldo: {Saldo}");
             }
             catch (CuentaNoActivaException ex)
             {
@@ -77,32 +85,24 @@ namespace Dsw2025Ej8.Domain
         {
             try
             {
-                if (estado != Estado.Activa)
-                    throw new CuentaNoActivaException(estado.ToString());
-
-                if (TasaInteres <= 0)
-                    throw new MontoNoValidoException();
-
-                decimal interesCalculado = Saldo * (TasaInteres / 100);
-                Saldo += interesCalculado;
-
-                Console.WriteLine($"Interés aplicado exitosamente. Nuevo saldo: {Saldo:C}");
+                if (Saldo > 0) // Ejemplo: Solo aplica interés si el saldo es positivo
+                {
+                    decimal interes = Saldo * 0.001m;
+                    Saldo += interes;
+                }
+                else
+                {
+                    throw new SaldoInsuficienteException();
+                }
             }
-            catch (CuentaNoActivaException ex)
+            catch (SaldoInsuficienteException ex)
             {
-                Console.WriteLine("Cuenta no activa: " + ex.Message);
-            }
-            catch (MontoNoValidoException ex)
-            {
-                Console.WriteLine("Tasa de interés no válida: " + ex.Message);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error inesperado: " + ex.Message);
+                Console.WriteLine($"Advertencia: {ex.Message}");
+
+
             }
         }
     }
- }
+}
 
 
-// buenas tardes me estimad cleingte 

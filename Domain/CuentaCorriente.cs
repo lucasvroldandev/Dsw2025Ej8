@@ -11,6 +11,7 @@ namespace Dsw2025Ej8.Domain
     {
         public decimal LimiteDescubierto { get; init; } //al inicializar,no por constructor,init.          para clase cuenta corriente
         public decimal Comision { get; private set; }//                                y cuenta corriente
+        public decimal TasaInteres { get; init; }
         public CuentaCorriente(string numero, decimal saldo, string[] titulares,decimal comision) : base (numero, saldo, titulares)
         {
             Comision = comision;
@@ -18,6 +19,7 @@ namespace Dsw2025Ej8.Domain
         }
         public override void Depositar(decimal monto)
         {
+            decimal ComisionDescontar = monto * Comision;
             try
             {
                 if (estado != Estado.Activa)
@@ -26,7 +28,7 @@ namespace Dsw2025Ej8.Domain
                 if (monto <= 0)
                     throw new MontoNoValidoException();
 
-                Saldo += monto;
+                Saldo +=( monto+ComisionDescontar);
             }
             catch (CuentaNoActivaException ex)
             {
@@ -44,6 +46,7 @@ namespace Dsw2025Ej8.Domain
 
         public override void Retirar(decimal monto)
         {
+            decimal ComisionDescontar = monto * Comision;
             try
             {
                 if (estado != Estado.Activa)
@@ -52,7 +55,7 @@ namespace Dsw2025Ej8.Domain
                 if (monto <= 0)
                     throw new MontoNoValidoException();
 
-                if ((Saldo - monto) >= Saldo+LimiteDescubierto)
+                if ((monto+ComisionDescontar) >= Saldo+LimiteDescubierto)
                 {
                    
                     throw new SaldoInsuficienteException();
@@ -81,9 +84,27 @@ namespace Dsw2025Ej8.Domain
 
         public override void AplicarInteres()
         {
-           
+            try
+            {
+                if (Saldo > 0) // Ejemplo: Solo aplica interés si el saldo es positivo
+                {
+                    decimal interes = Saldo * TasaInteres;  
+                    Saldo += interes;
+                }
+                else
+                {
+                    throw new SaldoInsuficienteException();
+                }
+            }
+            catch (SaldoInsuficienteException ex)
+            {
+                Console.WriteLine($"Advertencia: {ex.Message}"); 
+            }
+
         }
     }
 
 }
 
+//comision costo de cuenta corriente es por retiro
+//intereses es remuneracon por tener dinero,rendimiento
